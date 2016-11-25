@@ -18,11 +18,11 @@ class Range {
         to = t;
     }
     
-    List<Range> splitToPower(int p) {
-        int pow = (int) Math.pow(10, p);
+    List<Range> splitToPower(final int p) {
+        final int pow = (int) Math.pow(10, p);
         int splitFrom = (int) (from / pow) * pow;
         int splitTo = splitFrom + pow - 1;
-        List<Range> spl = new ArrayList<>();
+        final List<Range> spl = new ArrayList<>();
         while (splitFrom <= to) {
             Range r = new Range(from > splitFrom ? from : splitFrom, to < splitTo ? to : splitTo);
             spl.add(r);
@@ -32,10 +32,10 @@ class Range {
         return spl;
     }
     
-    boolean isFullInPower(int p) {
-        int pow = (int) Math.pow(10, p);
-        int lowest = (int) (from / pow) * pow;
-        int highest = lowest + pow - 1;
+    boolean isFullInPower(final int p) {
+        final int pow = (int) Math.pow(10, p);
+        final int lowest = (int) (from / pow) * pow;
+        final int highest = lowest + pow - 1;
         return (from == lowest && to == highest);
     }
     
@@ -43,22 +43,21 @@ class Range {
         return String.format("Range[%d -> %d]", from, to);
     }
     
-    Range joinRanges(List<Range> rs) {
+    Range joinRanges(final List<Range> rs) {
         rs.sort(comparator);
         return new Range(rs.get(0).from, rs.get(rs.size() - 1).to);
     }
     
     List<Range> split() {
-        int maxPower = (int) Math.log10(to);
+        final int maxPower = (int) Math.log10(to);
         return split(maxPower);
     }
     
-    List<Range> split(int pow) {
+    List<Range> split(final int pow) {
         //jeżeli zeszliśmy do jedności (10^0), to już nie ma co dzielić
         if (pow == 0) {
             return Arrays.asList(this);
         }
-        
         
         //podzielenie na pod-zakresy wg zadanej potęgi
         final Map<Boolean, List<Range>> partitioned = splitToPower(pow).stream()
@@ -74,7 +73,7 @@ class Range {
             .collect(Collectors.toList());
         
         //dołączamy do listy zakresy full
-        List<Range> toJoin = partitioned.get(Boolean.TRUE);
+        final List<Range> toJoin = partitioned.get(Boolean.TRUE);
         if (toJoin.size() > 0) {
             spl.add(joinRanges(toJoin));
         }
@@ -106,16 +105,15 @@ class Range {
     }
     
     public String toRegex() {
-        List<Range> rs = split();
-//        System.out.println(rs);
-        String rx = rs.stream()
+        final List<Range> rs = split();
+        final String rx = rs.stream()
             .map(Range::toSimpleRegex)
             .collect(Collectors.joining("|"));
         return rx;
     }
     
     public static void main(String[] args) {
-        String rx = new Range (2, 6910).toRegex();
+        final String rx = new Range(1000, 1954).toRegex();
         System.out.println(rx);
     }
 }
